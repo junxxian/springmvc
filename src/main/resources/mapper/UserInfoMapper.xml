@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mapper.UserInfoMapper">
+
+    <!--登录-->
+<select id="select1" resultType="com.pojo.UserInfo" parameterType="com.vo.UserInfoVO">
+    select * from userinfo
+    <where>
+        username = #{username} and password = #{password}
+    </where>
+</select>
+
+    <!--添加用户信息-->
+    <insert id="add1" parameterType="com.pojo.UserInfo">
+        insert into userinfo values (default ,#{username},#{password},#{email})
+    </insert>
+
+    <!--查找所有用户信息-->
+    <select id="select2" resultType="com.pojo.UserInfo">
+        select * from userinfo
+    </select>
+
+    <!--根据id查找用户信息-->
+    <select id="select3" resultType="com.pojo.UserInfo" parameterType="int">
+        select * from userinfo
+        <where>
+            <if test="value!=null and value!=''">
+                userid = #{userid}
+            </if>
+        </where>
+    </select>
+
+    <!--根据id修改用户信息-->
+    <update id="update1" parameterType="com.pojo.UserInfo">
+        update userinfo
+        <set>
+            <if test="username!=null and username!=''">
+                username = #{username},
+            </if>
+            <if test="password!=null and password!=''">
+                password = #{password},
+            </if>
+            <if test="email!=null and email!=''">
+                email = #{email},
+            </if>
+        </set>
+        where userid = #{userid}
+    </update>
+
+    <!--根据id删除用户信息-->
+    <delete id="delete1" parameterType="int">
+        delete from userinfo
+        <where>
+            <if test="value !=null and value !=''">
+                userid = #{userid}
+            </if>
+        </where>
+    </delete>
+
+    <!--根据条件（名字）查询用户信息-->
+    <select id="select4" parameterType="String" resultType="com.pojo.UserInfo">
+        select * from userinfo
+         <where>
+                    <if test="value!=null and value!=''">
+                        username like #{username}
+                    </if>
+                </where>
+    </select>
+
+    <!--根据用户id查询所有Role-->
+    <select id="select5" parameterType="int" resultType="com.dto.Role">
+        SELECT r.*,ISNULL(urid) ISNULL FROM user_role ur RIGHT JOIN roleinfo r
+         ON ur.`roleid`=r.`roleid` AND ur.`userid`=#{userid};
+    </select>
+
+    <!--同一个业务-->
+    <!--根据用户id删除所有的Role-->
+    <delete id="delete2" parameterType="int">
+        delete  from user_role where userid = #{userid}
+    </delete>
+
+    <!--根据用户id批量添加Role-->
+    <insert id="add2" parameterType="com.dto.Role_User">
+        insert into user_role (userid,roleid) values
+        <foreach collection="roleIdArr"  item="roleid" separator=",">
+            (
+            #{userid},
+            #{roleid}
+            )
+        </foreach>
+    </insert>
+    <!--同一个业务-->
+
+
+    <!--分页查询所有用户信息-->
+    <select id="findAllBySplit" resultType="com.pojo.UserInfo" parameterType="com.dto.FindByPageDto">
+        select * from userinfo limit #{start},#{maxShow}
+    </select>
+
+
+    <!--注册用户信息-->
+    <insert id="regUser" parameterType="com.pojo.UserInfo">
+        insert into userinfo (username,password,email) values
+        (#{username},#{password},#{email})
+    </insert>
+
+
+</mapper>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.MenuInfoMapper">
+    <resultMap id="MenuMapper" type="com.dto.Menu">
+        <id column="mid" property="id"></id>
+        <result column="mname" property="name"></result>
+        <result column="micon" property="icon"></result>
+        <result column="mpath" property="path"></result>
+        <result column="mpid" property="pid"></result>
+        <collection property="children" ofType="com.dto.Menu">
+            <id column="menuid" property="id"></id>
+            <result column="menuname" property="name"></result>
+            <result column="menuicon" property="icon"></result>
+            <result column="menupath" property="path"></result>
+            <result column="parentid" property="pid"></result>
+            <result column="checked" property="checked"></result>
+        </collection>
+    </resultMap>
+
+    <select id="listAllMenu" resultMap="MenuMapper" parameterType="int">
+        SELECT ntb.*,rm.*,ISNULL(rm.`mid`) checked FROM
+        (SELECT m1.*,m2.`menuid` 'mid',m2.`menuname` mname,m2.`menuicon` micon,m2.`menupath` mpath,m2.`parentid` mpid
+        FROM menuinfo m1,menuinfo m2 WHERE m1.parentid=m2.`menuid`)  ntb
+        LEFT JOIN (SELECT * FROM role_menu WHERE role_menu.`rid`=#{roleid}) rm ON ntb.menuid=rm.`mid`;
+    </select>
+
+
+    <!--同一个业务-->
+    <!--先删除role-menu中间表的数据-->
+    <delete id="delete1" parameterType="int">
+        delete from role_menu where rid = #{roleid}
+    </delete>
+
+    <!--后添加数据-->
+    <insert id="insert1" parameterType="com.dto.Role_Menu">
+        insert into role_menu (rid,mid) values
+        <foreach collection="menuids" item="menuid" separator=",">
+            (
+            #{roleid},
+            #{menuid}
+            )
+        </foreach>
+    </insert>
+    <!--同一个业务-->
+
+    <select id="listMenuByUserId" parameterType="int" resultMap="MenuMapper">
+        SELECT ntb.* FROM
+        (SELECT m.`menuid` id FROM userinfo u,user_role ur,roleinfo r,role_menu rm,menuinfo m
+        WHERE u.`userid`=ur.`userid` AND ur.`roleid`=r.`roleid` AND r.`roleid`=rm.`rid` AND rm.`mid`=m.`menuid` AND u.`userid`=#{userid}
+        GROUP BY m.`menuid`) tb1 LEFT JOIN
+        (SELECT m1.*,m2.`menuid` 'mid',m2.`menuname` mname,m2.`menuicon` micon,m2.`menupath` mpath,m2.`parentid` mpid
+        FROM menuinfo m1,menuinfo m2 WHERE m1.parentid=m2.`menuid`)  ntb
+        ON ntb.menuid=tb1.id;
+    </select>
+
+
+
+</mapper>

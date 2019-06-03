@@ -1,0 +1,12 @@
+2019-05-28 11:55:36,846 INFO [com.TestLog4j] - slf4j for info
+2019-05-28 11:55:36,847 ERROR [com.TestLog4j] - slf4j for error
+2019-05-28 11:55:36,847 WARN [com.TestLog4j] - slf4j for warn
+2019-05-28 11:55:36,849 INFO [com.TestLog4j] - slf4j message is : Hello SLF4J
+2019-05-28 11:56:06,370 INFO [com.TestLog4j] - slf4j for info
+2019-05-28 11:56:06,371 ERROR [com.TestLog4j] - slf4j for error
+2019-05-28 11:56:06,371 WARN [com.TestLog4j] - slf4j for warn
+2019-05-28 11:56:06,373 INFO [com.TestLog4j] - slf4j message is : Hello SLF4J
+2019-05-28 16:48:13,776 INFO [com.TestLog4j] - slf4j for info
+2019-05-28 16:48:13,777 ERROR [com.TestLog4j] - slf4j for error
+2019-05-28 16:48:13,777 WARN [com.TestLog4j] - slf4j for warn
+2019-05-28 16:48:13,782 INFO [com.TestLog4j] - slf4j message is : Hello SLF4J
